@@ -10,14 +10,23 @@ type Point [2]int
 
 func NewBoard() *Board {
 	return &Board{
+		// Row 0
 		{ATiger, Empty, Empty, Empty, Empty, Empty, ALion},
+		// Row 1
 		{Empty, ACat, Empty, Empty, Empty, ADog, Empty},
+		// Row 2
 		{AElephant, Empty, AWolf, Empty, AHyena, Empty, AMouse},
+		// Row 3
 		{Empty, Empty, Empty, Empty, Empty, Empty, Empty},
+		// Row 4
 		{Empty, Empty, Empty, Empty, Empty, Empty, Empty},
+		// Row 5
 		{Empty, Empty, Empty, Empty, Empty, Empty, Empty},
+		// Row 6
 		{BMouse, Empty, BHyena, Empty, BCat, Empty, BElephant},
+		// Row 7
 		{Empty, BDog, Empty, Empty, Empty, BCat, Empty},
+		// Row 8
 		{BLion, Empty, Empty, Empty, Empty, Empty, BTiger},
 	}
 }
@@ -26,8 +35,33 @@ func (b *Board) Get(p Point) Piece {
 	return b[p[1]][p[0]]
 }
 
-func (b *Board) MoveList() {
-
+func (b *Board) MoveList() [][2]Point {
+	moves := make([][2]Point, 0)
+	for x := 0; x < 7; x++ {
+		for y := 0; y < 9; y++ {
+			from := Point{x, y}
+			p := b.Get(from)
+			if p == Empty {
+				continue
+			}
+			var adjacency map[Point][]Point
+			switch {
+			case p.CanJump():
+				adjacency = jumpingAdjacency
+			case p.CanSwim():
+				adjacency = swimmingAdjacency
+			default:
+				adjacency = normalAdjacency
+			}
+			for _, to := range adjacency[from] {
+				opponent := b.Get(to)
+				if p.CanTake(opponent) {
+					moves = append(moves, [2]Point{from, to})
+				}
+			}
+		}
+	}
+	return moves
 }
 
 var normalAdjacency = map[Point][]Point{

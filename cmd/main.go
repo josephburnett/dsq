@@ -7,5 +7,7 @@ import (
 )
 
 func main() {
-	fmt.Print(types.NewBoard().String())
+	b := types.NewBoard()
+	fmt.Print(b.String())
+	fmt.Printf("%v\n", b.MoveList())
 }

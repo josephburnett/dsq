@@ -1,6 +1,13 @@
 package types
 
 type Piece int
+type Side int
+
+const (
+	None Side = iota
+	A
+	B
+)
 
 const (
 	Empty Piece = iota

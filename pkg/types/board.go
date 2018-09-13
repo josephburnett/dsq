@@ -8,6 +8,11 @@ import (
 type Board [9][7]Piece
 type Point [2]int
 
+var (
+	ADen = Point{3, 0}
+	BDen = Point{3, 8}
+)
+
 func NewBoard() *Board {
 	return &Board{
 		// Row 0
@@ -33,6 +38,20 @@ func NewBoard() *Board {
 
 func (b *Board) Get(p Point) Piece {
 	return b[p[1]][p[0]]
+}
+
+func (b *Board) put(p Point, piece Piece) Piece {
+	displaced := b[p[1]][p[0]]
+	b[p[1]][p[0]] = piece
+	return displaced
+}
+
+func (b *Board) Move(m [2]Point) Piece {
+	return b.put(m[1], b.put(m[0], Empty))
+}
+
+func (b *Board) Unmove(m [2]Point, p Piece) {
+	b.put(m[1], b.put(m[0], p))
 }
 
 func (b *Board) MoveList() [][2]Point {
@@ -65,7 +84,7 @@ func (b *Board) MoveList() [][2]Point {
 }
 
 func (p Point) Rotate() Point {
-	return Point{7 - p[0], 9 - p[1]}
+	return Point{6 - p[0], 8 - p[1]}
 }
 
 var normalAdjacency = map[Point][]Point{
@@ -172,7 +191,7 @@ var jumpingAdjacency = map[Point][]Point{
 	Point{0, 3}: []Point{Point{0, 2}, Point{3, 3}, Point{0, 4}},
 	Point{1, 3}: []Point{},
 	Point{2, 3}: []Point{},
-	Point{3, 3}: []Point{Point{3, 2}, Point{0, 3}, Point{7, 3}, Point{3, 4}},
+	Point{3, 3}: []Point{Point{3, 2}, Point{0, 3}, Point{6, 3}, Point{3, 4}},
 	Point{4, 3}: []Point{},
 	Point{5, 3}: []Point{},
 	Point{6, 3}: []Point{Point{6, 2}, Point{3, 3}, Point{6, 4}},

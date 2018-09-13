@@ -64,6 +64,10 @@ func (b *Board) MoveList() [][2]Point {
 	return moves
 }
 
+func (p Point) Rotate() Point {
+	return Point{7 - p[0], 9 - p[1]}
+}
+
 var normalAdjacency = map[Point][]Point{
 	// Row 0
 	Point{0, 0}: []Point{Point{1, 0}, Point{0, 1}},

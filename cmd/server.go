@@ -20,6 +20,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	move := r.Form.Get("move")
 	board := r.Form.Get("board")
 	b := types.NewBoard()
+	msg := "Game on!"
 	if move != "" && board != "" {
 		requestedMove, err := parseMove(move)
 		if err != nil {
@@ -31,17 +32,24 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
+		validMove := false
 		for _, m := range b.MoveList() {
 			if m == requestedMove && b.Get(m[0]).Side() == types.B {
 				b.Move(m)
 				if counterMove, ok := engine.BestMove(b.Clone(), types.A); ok {
 					b.Move(counterMove)
 				}
+				validMove = true
 				break
 			}
 		}
+		if validMove {
+			msg = "Moved: " + move
+		} else {
+			msg = "Invalid move: " + move
+		}
 	}
-	err = html.Render(w, b)
+	err = html.Render(w, b, msg)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusServiceUnavailable)
 	}

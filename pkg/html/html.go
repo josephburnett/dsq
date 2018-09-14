@@ -7,12 +7,21 @@ import (
 	"github.com/josephburnett/dsq-golang/pkg/types"
 )
 
-func Render(w io.Writer, b *types.Board) error {
+type data struct {
+	Board   *types.Board
+	Message string
+}
+
+func Render(w io.Writer, b *types.Board, msg string) error {
+	d := data{
+		Board:   b,
+		Message: msg,
+	}
 	t, err := template.New("page").Parse(tmp)
 	if err != nil {
 		return err
 	}
-	err = t.Execute(w, b)
+	err = t.Execute(w, d)
 	return err
 }
 
@@ -42,7 +51,7 @@ function post(params) {
     form.submit();
 }
 
-document.board = {{ .Marshal }}
+document.board = {{ .Board.Marshal }}
 
 document.click = function (square) {
     // Select
@@ -67,9 +76,10 @@ document.click = function (square) {
     </head>
     <body style="font-family:monospace;">
         <div>+--+--+--+--+--+--+--+</div>
-        {{range $y, $row := . }}<div>{{range $x, $square := $row }}|<span onclick="document.click('{{$x}}'+'{{$y}}');">{{ $square }}</span>{{end}}|</div>
+        {{range $y, $row := .Board }}<div>{{range $x, $square := $row }}|<span onclick="document.click('{{$x}}'+'{{$y}}');">{{ $square }}</span>{{end}}|</div>
         <div>+--+--+--+--+--+--+--+</div>
         {{end}}
+        <div style="margin-top:20px;">{{ .Message }}</div>
     </body>
 </html>
 `

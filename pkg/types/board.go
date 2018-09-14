@@ -337,3 +337,13 @@ func Unmarshal(blob string) (*Board, error) {
 	err := json.Unmarshal([]byte(blob), b)
 	return b, err
 }
+
+func (b *Board) Clone() *Board {
+	bc := &Board{}
+	for y := 0; y < 9; y++ {
+		for x := 0; x < 7; x++ {
+			bc[y][x] = b[y][x]
+		}
+	}
+	return bc
+}

@@ -100,7 +100,7 @@ const win = 9999
 type development [9][7]int
 
 func (d development) Get(p types.Point) int {
-	return d[p[0]][p[1]]
+	return d[p[1]][p[0]]
 }
 
 var mouseDevelopment = development{

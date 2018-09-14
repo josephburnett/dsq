@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/josephburnett/dsq-golang/pkg/engine"
 	"github.com/josephburnett/dsq-golang/pkg/html"
 	"github.com/josephburnett/dsq-golang/pkg/types"
 )
@@ -31,8 +32,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		for _, m := range b.MoveList() {
-			if m == requestedMove {
+			if m == requestedMove && b.Get(m[0]).Side() == types.B {
 				b.Move(m)
+				if counterMove, ok := engine.BestMove(b.Clone(), types.A); ok {
+					b.Move(counterMove)
+				}
 				break
 			}
 		}

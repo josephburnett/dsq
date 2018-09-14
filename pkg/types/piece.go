@@ -243,6 +243,6 @@ func (p Piece) String() string {
 	case BElephant:
 		return "b8"
 	default:
-		return "  "
+		return "\u00A0\u00A0" // non-breaking space
 	}
 }

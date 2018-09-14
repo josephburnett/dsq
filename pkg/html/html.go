@@ -9,10 +9,10 @@ import (
 
 type data struct {
 	Board   *types.Board
-	Message string
+	Message []string
 }
 
-func Render(w io.Writer, b *types.Board, msg string) error {
+func Render(w io.Writer, b *types.Board, msg []string) error {
 	d := data{
 		Board:   b,
 		Message: msg,
@@ -79,7 +79,10 @@ document.click = function (square) {
         {{range $y, $row := .Board }}<div>{{range $x, $square := $row }}|<span onclick="document.click('{{$x}}'+'{{$y}}');">{{ $square }}</span>{{end}}|</div>
         <div>+--+--+--+--+--+--+--+</div>
         {{end}}
-        <div style="margin-top:20px;">{{ .Message }}</div>
+        <div style="margin-top:20px;"> </div>
+        {{range .Message }}
+        <div>{{ . }}</div>
+        {{end}}
     </body>
 </html>
 `

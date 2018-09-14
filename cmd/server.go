@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/josephburnett/dsq-golang/pkg/engine"
 	"github.com/josephburnett/dsq-golang/pkg/html"
@@ -20,7 +21,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	move := r.Form.Get("move")
 	board := r.Form.Get("board")
 	b := types.NewBoard()
-	msg := "Game on!"
+	msg := make([]string, 0)
 	if move != "" && board != "" {
 		requestedMove, err := parseMove(move)
 		if err != nil {
@@ -36,18 +37,25 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		for _, m := range b.MoveList() {
 			if m == requestedMove && b.Get(m[0]).Side() == types.B {
 				b.Move(m)
-				if counterMove, ok := engine.BestMove(b.Clone(), types.A); ok {
+				start := time.Now()
+				counterMove, stat, ok := engine.BestMove(b.Clone(), types.A)
+				if ok {
 					b.Move(counterMove)
 				}
+				msg = append(msg, fmt.Sprintf("Moved %v.", move))
+				msg = append(msg, fmt.Sprintf("Evaluated %v positions.", stat.PositionsEvaluated))
+				msg = append(msg, fmt.Sprintf("Spent %v searching.", stat.Time))
+				msg = append(msg, fmt.Sprintf("Latency %v.", time.Since(start)))
+				msg = append(msg, fmt.Sprintf("Best outcome is %v.", stat.BestOutcome))
 				validMove = true
 				break
 			}
 		}
-		if validMove {
-			msg = "Moved: " + move
-		} else {
-			msg = "Invalid move: " + move
+		if !validMove {
+			msg = append(msg, "Invalid move: "+move)
 		}
+	} else {
+		msg = append(msg, "Game on!")
 	}
 	err = html.Render(w, b, msg)
 	if err != nil {

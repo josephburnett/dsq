@@ -29,7 +29,7 @@ func NewBoard() *Board {
 		// Row 5
 		{Empty, Empty, Empty, Empty, Empty, Empty, Empty},
 		// Row 6
-		{BMouse, Empty, BHyena, Empty, BCat, Empty, BElephant},
+		{BMouse, Empty, BHyena, Empty, BWolf, Empty, BElephant},
 		// Row 7
 		{Empty, BDog, Empty, Empty, Empty, BCat, Empty},
 		// Row 8
@@ -350,4 +350,13 @@ func (b *Board) Clone() *Board {
 		}
 	}
 	return bc
+}
+
+func EmptyBoard() *Board {
+	return &Board{}
+}
+
+func (b *Board) With(pt Point, p Piece) *Board {
+	b.put(pt, p)
+	return b
 }

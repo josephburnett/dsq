@@ -74,14 +74,14 @@ func TestMoveList(t *testing.T) {
 		want  [][2]Point
 	}{{
 		name:  "tiger in corner",
-		board: emptyBoard().with(Point{0, 0}, ATiger),
+		board: EmptyBoard().With(Point{0, 0}, ATiger),
 		want: [][2]Point{
 			{{0, 0}, {1, 0}}, // right
 			{{0, 0}, {0, 1}}, // up
 		},
 	}, {
 		name:  "tiger by the water (bottom)",
-		board: emptyBoard().with(Point{1, 2}, BTiger),
+		board: EmptyBoard().With(Point{1, 2}, BTiger),
 		want: [][2]Point{
 			{{1, 2}, {1, 1}}, // down
 			{{1, 2}, {0, 2}}, // left
@@ -90,7 +90,7 @@ func TestMoveList(t *testing.T) {
 		},
 	}, {
 		name:  "tiger by the water (side)",
-		board: emptyBoard().with(Point{0, 4}, ATiger),
+		board: EmptyBoard().With(Point{0, 4}, ATiger),
 		want: [][2]Point{
 			{{0, 4}, {0, 3}}, // down
 			{{0, 4}, {3, 4}}, // jump right over water
@@ -98,7 +98,7 @@ func TestMoveList(t *testing.T) {
 		},
 	}, {
 		name:  "mouse by the water",
-		board: emptyBoard().with(Point{1, 2}, BMouse),
+		board: EmptyBoard().With(Point{1, 2}, BMouse),
 		want: [][2]Point{
 			{{1, 2}, {1, 1}}, // down
 			{{1, 2}, {0, 2}}, // left
@@ -107,7 +107,7 @@ func TestMoveList(t *testing.T) {
 		},
 	}, {
 		name:  "mouse in the water",
-		board: emptyBoard().with(Point{1, 3}, AMouse),
+		board: EmptyBoard().With(Point{1, 3}, AMouse),
 		want: [][2]Point{
 			{{1, 3}, {1, 2}}, // down out of the water
 			{{1, 3}, {0, 3}}, // left out of the water
@@ -116,10 +116,27 @@ func TestMoveList(t *testing.T) {
 		},
 	}, {
 		name:  "cat in the middle",
-		board: emptyBoard().with(Point{3, 4}, BCat),
+		board: EmptyBoard().With(Point{3, 4}, BCat),
 		want: [][2]Point{
 			{{3, 4}, {3, 3}}, // down
 			{{3, 4}, {3, 5}}, // up
+		},
+	}, {
+		name:  "cat takes a mouse",
+		board: EmptyBoard().With(Point{0, 0}, ACat).With(Point{0, 1}, BMouse),
+		want: [][2]Point{
+			{{0, 0}, {1, 0}}, // cat moves right
+			{{0, 0}, {0, 1}}, // cat moves up taking mouse
+			{{0, 1}, {1, 1}}, // mouse moves right
+			{{0, 1}, {0, 2}}, // mouse moves up
+		},
+	}, {
+		name:  "cat does not take a mouse",
+		board: EmptyBoard().With(Point{0, 0}, ACat).With(Point{0, 1}, AMouse),
+		want: [][2]Point{
+			{{0, 0}, {1, 0}}, // cat moves right
+			{{0, 1}, {1, 1}}, // mouse moves right
+			{{0, 1}, {0, 2}}, // mouse moves up
 		},
 	}}
 
@@ -142,13 +159,4 @@ func equals(a, b [][2]Point) bool {
 		}
 	}
 	return true
-}
-
-func emptyBoard() *Board {
-	return &Board{}
-}
-
-func (b *Board) with(pt Point, p Piece) *Board {
-	b.put(pt, p)
-	return b
 }

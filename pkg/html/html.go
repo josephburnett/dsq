@@ -42,6 +42,8 @@ function post(params) {
     form.submit();
 }
 
+document.board = {{ .Marshal }}
+
 document.click = function (square) {
     // Select
     if (!document.selected) {
@@ -57,7 +59,7 @@ document.click = function (square) {
     }
     // Move
     console.log("moving from " + document.selected + " to " + square);
-    post({move: document.selected + square})
+    post({move: document.selected + square, board: document.board})
     delete(document.selected)
 }
 

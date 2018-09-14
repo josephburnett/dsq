@@ -2,6 +2,7 @@ package types
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 )
 
@@ -324,4 +325,15 @@ func (b *Board) String() string {
 		buffer.WriteString("+--+--+--+--+--+--+--+\n")
 	}
 	return buffer.String()
+}
+
+func (b *Board) Marshal() string {
+	blob, _ := json.Marshal(b)
+	return string(blob)
+}
+
+func Unmarshal(blob string) (*Board, error) {
+	b := &Board{}
+	err := json.Unmarshal([]byte(blob), b)
+	return b, err
 }

@@ -56,7 +56,7 @@ func (b *Board) Move(m [2]Point) Piece {
 }
 
 func (b *Board) Unmove(m [2]Point, p Piece) {
-	b.move(m, p)
+	b.move([2]Point{m[1], m[0]}, p)
 }
 
 func (b *Board) MoveList() [][2]Point {

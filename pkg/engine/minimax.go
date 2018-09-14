@@ -12,9 +12,9 @@ type Stat struct {
 	BestOutcome        int
 }
 
-func BestMove(b *types.Board, s types.Side) ([2]types.Point, *Stat, bool) {
+func BestMove(b *types.Board, s types.Side, depth int) ([2]types.Point, *Stat, bool) {
 	start := time.Now()
-	bestOutcome, bestMove, positionsEvaluated, ok := minimax(b, s, 10)
+	bestOutcome, bestMove, positionsEvaluated, ok := minimax(b, s, depth)
 	stat := &Stat{
 		Time:               time.Since(start),
 		PositionsEvaluated: positionsEvaluated,

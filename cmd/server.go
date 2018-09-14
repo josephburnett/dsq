@@ -38,15 +38,16 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			if m == requestedMove && b.Get(m[0]).Side() == types.B {
 				b.Move(m)
 				start := time.Now()
-				counterMove, stat, ok := engine.BestMove(b.Clone(), types.A)
+				cm, stat, ok := engine.BestMove(b.Clone(), types.A, 4)
 				if ok {
-					b.Move(counterMove)
+					b.Move(cm)
 				}
 				msg = append(msg, fmt.Sprintf("Moved %v.", move))
+				msg = append(msg, fmt.Sprintf("Counter-moved %v%v%v%v.", cm[0][0], cm[0][1], cm[1][0], cm[1][1]))
 				msg = append(msg, fmt.Sprintf("Evaluated %v positions.", stat.PositionsEvaluated))
 				msg = append(msg, fmt.Sprintf("Spent %v searching.", stat.Time))
 				msg = append(msg, fmt.Sprintf("Latency %v.", time.Since(start)))
-				msg = append(msg, fmt.Sprintf("Best outcome is %v.", stat.BestOutcome))
+				msg = append(msg, fmt.Sprintf("Best outcome is %v.", -stat.BestOutcome))
 				validMove = true
 				break
 			}

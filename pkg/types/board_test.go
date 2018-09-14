@@ -138,6 +138,15 @@ func TestMoveList(t *testing.T) {
 			{{0, 1}, {1, 1}}, // mouse moves right
 			{{0, 1}, {0, 2}}, // mouse moves up
 		},
+	}, {
+		name:  "mouse on the opposing side",
+		board: EmptyBoard().With(Point{3, 7}, AMouse),
+		want: [][2]Point{
+			{{3, 7}, {3, 6}}, // down
+			{{3, 7}, {2, 7}}, // left
+			{{3, 7}, {4, 7}}, // right
+			{{3, 7}, {3, 8}}, // up
+		},
 	}}
 
 	for _, tc := range cases {

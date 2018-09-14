@@ -47,12 +47,16 @@ func (b *Board) put(p Point, piece Piece) Piece {
 	return displaced
 }
 
+func (b *Board) move(m [2]Point, p Piece) Piece {
+	return b.put(m[1], b.put(m[0], p))
+}
+
 func (b *Board) Move(m [2]Point) Piece {
-	return b.put(m[1], b.put(m[0], Empty))
+	return b.move(m, Empty)
 }
 
 func (b *Board) Unmove(m [2]Point, p Piece) {
-	b.put(m[1], b.put(m[0], p))
+	b.move(m, p)
 }
 
 func (b *Board) MoveList() [][2]Point {

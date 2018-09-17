@@ -9,6 +9,13 @@ const (
 	B
 )
 
+func (s Side) Other() Side {
+	if s == A {
+		return B
+	}
+	return A
+}
+
 const (
 	Empty Piece = iota
 	AMouse

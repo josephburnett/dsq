@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"net/rpc"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -13,7 +15,18 @@ import (
 	"github.com/josephburnett/dsq-golang/pkg/types"
 )
 
+var (
+	backend = os.Getenv("BACKEND")
+)
+
+func init() {
+	if backend == "" {
+		backend = "localhost:8080"
+	}
+}
+
 func handler(w http.ResponseWriter, r *http.Request) {
+	log.Printf("frontend request")
 	err := r.ParseForm()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -22,12 +35,14 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	msg := make([]string, 0)
 	switch r.Method {
 	case http.MethodGet:
+		b := types.NewBoard()
 		msg = append(msg, "Game on!")
-		err = html.Render(w, types.NewBoard(), msg)
+		err = html.Render(w, b, msg)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusServiceUnavailable)
 			return
 		}
+		log.Printf("new board\n%v\n", b)
 	case http.MethodPost:
 		move, err := parseMove(r.Form.Get("move"))
 		if err != nil {
@@ -35,12 +50,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		board, err := types.Unmarshal(r.Form.Get("board"))
+		log.Printf("requested move %v on board\n%v\n", move, board)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		start := time.Now()
-		reply, err := server.Move(r.Host, board, move)
+		reply, err := server.Move(backend, board, move)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusServiceUnavailable)
 			return
@@ -51,18 +67,24 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			msg = append(msg, fmt.Sprintf("Counter-moved %v.", reply.BestMove))
 			msg = append(msg, fmt.Sprintf("Evaluated %v positions.", stat.PositionsEvaluated))
 			msg = append(msg, fmt.Sprintf("Spent %v searching.", stat.Time))
-			msg = append(msg, fmt.Sprintf("Latency %v.", time.Since(start)))
+			latency := time.Since(start)
+			msg = append(msg, fmt.Sprintf("Latency %v.", latency))
+			log.Printf("latency %v", latency)
 			msg = append(msg, fmt.Sprintf("Best outcome is %v.", -stat.BestOutcome))
+			log.Printf("valid move returning stat %+v", stat)
 		} else {
 			msg = append(msg, fmt.Sprintf("Invalid move %v.", move))
+			log.Printf("invalid move")
 		}
 		err = html.Render(w, board, msg)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusServiceUnavailable)
 			return
 		}
+		log.Printf("updated board\n%v\n", board)
 	default:
 		http.Error(w, "", http.StatusMethodNotAllowed)
+		log.Printf("method not allowed %", r.Method)
 		return
 	}
 }
@@ -72,6 +94,8 @@ func main() {
 	rpc.Register(s)
 	rpc.HandleHTTP()
 	http.HandleFunc("/", handler)
+
+	log.Printf("dsq up with backend %v", backend)
 	http.ListenAndServe(":8080", nil)
 }
 

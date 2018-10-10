@@ -4,6 +4,13 @@ import (
 	"testing"
 )
 
+var (
+	down  = Point{0, -1}
+	left  = Point{-1, 0}
+	right = Point{1, 0}
+	up    = Point{0, 1}
+)
+
 func TestGet(t *testing.T) {
 	cases := []struct {
 		name  string
@@ -212,6 +219,67 @@ func TestNormalAdjacency(t *testing.T) {
 					t.Errorf("invalid normal adjacency to water: %v %v", from, to)
 				case !isOutOfBounds(to) && !isWater(from) && !isWater(to) && !contains(adjacencies, to):
 					t.Errorf("missing normal adjacency: %v %v", from, to)
+				}
+			}
+		}
+	}
+}
+
+func jump(from Point, delta Point) Point {
+	switch from[0] {
+	case 1, 2, 4, 5:
+		if from[1] == 2 && delta == up {
+			// Jumping up
+			return Point{from[0], 6}
+		}
+		if from[1] == 6 && delta == down {
+			// Jumping down
+			return Point{from[0], 2}
+		}
+	}
+	switch from[1] {
+	case 3, 4, 5:
+		if from[0] == 0 && delta == right {
+			// Jumping right from left side
+			return Point{3, from[1]}
+		}
+		if from[0] == 3 && delta == left {
+			// Jumping left from center
+			return Point{0, from[1]}
+		}
+		if from[0] == 3 && delta == right {
+			// Jumping right from center
+			return Point{6, from[1]}
+		}
+		if from[0] == 6 && delta == left {
+			// Jumping left from right side
+			return Point{3, from[1]}
+		}
+	}
+	return Point{from[0] + delta[0], from[1] + delta[1]}
+}
+
+func TestJumpingAdjacency(t *testing.T) {
+	for x := 0; x < 7; x++ {
+		for y := 0; y < 9; y++ {
+			from := Point{x, y}
+			adjacencies := jumpingAdjacency[from]
+			for _, delta := range []Point{
+				{0, -1}, // Down
+				{-1, 0}, // Left
+				{1, 0},  // Right
+				{0, 1},  // Up
+			} {
+				to := jump(from, delta)
+				switch {
+				case isWater(from) && len(adjacencies) != 0:
+					t.Errorf("invalid jumping adjacency from water: %v %v", from, to)
+				case isOutOfBounds(to) && contains(adjacencies, to):
+					t.Errorf("invalid jumping adjacency with out-of-bounds: %v %v", from, to)
+				case isWater(to) && contains(adjacencies, to):
+					t.Errorf("invalid jumping adjacency to water: %v %v", from, to)
+				case !isOutOfBounds(to) && !isWater(from) && !isWater(to) && !contains(adjacencies, to):
+					t.Errorf("missing jumping adjacency: %v %v", from, to)
 				}
 			}
 		}

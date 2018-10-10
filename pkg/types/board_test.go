@@ -158,6 +158,64 @@ func TestMoveList(t *testing.T) {
 	}
 }
 
+func contains(points []Point, p1 Point) bool {
+	for _, p2 := range points {
+		if p1 == p2 {
+			return true
+		}
+	}
+	return false
+}
+
+func isWater(p Point) bool {
+	switch p[0] {
+	case 1, 2, 4, 5:
+		switch p[1] {
+		case 3, 4, 5:
+			return true
+		default:
+			return false
+		}
+	default:
+		return false
+	}
+}
+
+func isOutOfBounds(p Point) bool {
+	if p[0] < 0 || p[0] > 6 {
+		return true
+	}
+	if p[1] < 0 || p[1] > 8 {
+		return true
+	}
+	return false
+}
+
+func TestNormalAdjacency(t *testing.T) {
+	for x := 0; x < 7; x++ {
+		for y := 0; y < 9; y++ {
+			from := Point{x, y}
+			adjacencies := normalAdjacency[from]
+			for _, delta := range []Point{
+				{0, -1}, // Down
+				{-1, 0}, // Left
+				{1, 0},  // Right
+				{0, 1},  // Up
+			} {
+				to := Point{x + delta[0], y + delta[1]}
+				switch {
+				case isOutOfBounds(to) && contains(adjacencies, to):
+					t.Errorf("invalid normal adjacency with out-of-bounds: %v %v", from, to)
+				case isWater(to) && contains(adjacencies, to):
+					t.Errorf("invalid normal adjacency with water: %v %v", from, to)
+				case !isOutOfBounds(to) && !isWater(from) && !isWater(to) && !contains(adjacencies, to):
+					t.Errorf("missing normal adjacency: %v %v", from, to)
+				}
+			}
+		}
+	}
+}
+
 func equals(a, b [][2]Point) bool {
 	if len(a) != len(b) {
 		return false

@@ -163,7 +163,7 @@ var normalAdjacency = map[Point][]Point{
 	Point{2, 8}: []Point{Point{2, 7}, Point{1, 8}, Point{3, 8}},
 	Point{3, 8}: []Point{Point{3, 7}, Point{2, 8}, Point{4, 8}},
 	Point{4, 8}: []Point{Point{4, 7}, Point{3, 8}, Point{5, 8}},
-	Point{5, 8}: []Point{Point{5, 7}, Point{4, 8}, Point{4, 8}},
+	Point{5, 8}: []Point{Point{5, 7}, Point{4, 8}, Point{6, 8}},
 	Point{6, 8}: []Point{Point{6, 7}, Point{5, 8}},
 }
 

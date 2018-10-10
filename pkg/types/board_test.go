@@ -286,6 +286,29 @@ func TestJumpingAdjacency(t *testing.T) {
 	}
 }
 
+func TestSwimmingAdjacency(t *testing.T) {
+	for x := 0; x < 7; x++ {
+		for y := 0; y < 9; y++ {
+			from := Point{x, y}
+			adjacencies := normalAdjacency[from]
+			for _, delta := range []Point{
+				{0, -1}, // Down
+				{-1, 0}, // Left
+				{1, 0},  // Right
+				{0, 1},  // Up
+			} {
+				to := Point{x + delta[0], y + delta[1]}
+				switch {
+				case isOutOfBounds(to) && contains(adjacencies, to):
+					t.Errorf("invalid swimming adjacency with out-of-bounds: %v %v", from, to)
+				case !isOutOfBounds(to) && !isWater(from) && !isWater(to) && !contains(adjacencies, to):
+					t.Errorf("missing swimming adjacency: %v %v", from, to)
+				}
+			}
+		}
+	}
+}
+
 func equals(a, b [][2]Point) bool {
 	if len(a) != len(b) {
 		return false

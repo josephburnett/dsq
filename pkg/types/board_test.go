@@ -204,10 +204,12 @@ func TestNormalAdjacency(t *testing.T) {
 			} {
 				to := Point{x + delta[0], y + delta[1]}
 				switch {
+				case isWater(from) && len(adjacencies) != 0:
+					t.Errorf("invalid normal adjacency from water: %v %v", from, to)
 				case isOutOfBounds(to) && contains(adjacencies, to):
 					t.Errorf("invalid normal adjacency with out-of-bounds: %v %v", from, to)
 				case isWater(to) && contains(adjacencies, to):
-					t.Errorf("invalid normal adjacency with water: %v %v", from, to)
+					t.Errorf("invalid normal adjacency to water: %v %v", from, to)
 				case !isOutOfBounds(to) && !isWater(from) && !isWater(to) && !contains(adjacencies, to):
 					t.Errorf("missing normal adjacency: %v %v", from, to)
 				}

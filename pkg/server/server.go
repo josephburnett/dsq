@@ -1,7 +1,7 @@
 package server
 
 import (
-	"github.com/josephburnett/dsq-golang/pkg/types"
+	"github.com/josephburnett/dsq/pkg/types"
 )
 
 func Move(host string, b *types.Board, move [2]types.Point) (*Reply, error) {

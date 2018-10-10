@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/josephburnett/dsq-golang/pkg/types"
+	"github.com/josephburnett/dsq/pkg/types"
 )
 
 func TestBestMove(t *testing.T) {

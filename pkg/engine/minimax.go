@@ -3,7 +3,7 @@ package engine
 import (
 	"time"
 
-	"github.com/josephburnett/dsq-golang/pkg/types"
+	"github.com/josephburnett/dsq/pkg/types"
 )
 
 type Stat struct {

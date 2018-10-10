@@ -4,7 +4,7 @@ import (
 	"html/template"
 	"io"
 
-	"github.com/josephburnett/dsq-golang/pkg/types"
+	"github.com/josephburnett/dsq/pkg/types"
 )
 
 type data struct {

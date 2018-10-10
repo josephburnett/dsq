@@ -1,7 +1,7 @@
 package engine
 
 import (
-	"github.com/josephburnett/dsq-golang/pkg/types"
+	"github.com/josephburnett/dsq/pkg/types"
 )
 
 func Fitness(b *types.Board) int {

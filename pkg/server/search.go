@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/rpc"
 
-	"github.com/josephburnett/dsq-golang/pkg/engine"
-	"github.com/josephburnett/dsq-golang/pkg/types"
+	"github.com/josephburnett/dsq/pkg/engine"
+	"github.com/josephburnett/dsq/pkg/types"
 )
 
 type Search int

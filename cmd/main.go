@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/josephburnett/dsq-golang/pkg/html"
-	"github.com/josephburnett/dsq-golang/pkg/server"
-	"github.com/josephburnett/dsq-golang/pkg/types"
+	"github.com/josephburnett/dsq/pkg/html"
+	"github.com/josephburnett/dsq/pkg/server"
+	"github.com/josephburnett/dsq/pkg/types"
 )
 
 var (

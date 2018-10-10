@@ -3,7 +3,7 @@ package engine
 import (
 	"testing"
 
-	"github.com/josephburnett/dsq-golang/pkg/types"
+	"github.com/josephburnett/dsq/pkg/types"
 )
 
 func TestFitness(t *testing.T) {

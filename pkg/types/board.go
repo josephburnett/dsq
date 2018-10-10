@@ -288,9 +288,9 @@ var swimmingAdjacency = map[Point][]Point{
 	Point{1, 5}: []Point{Point{1, 4}, Point{0, 5}, Point{2, 5}, Point{1, 6}},
 	Point{2, 5}: []Point{Point{2, 4}, Point{1, 5}, Point{3, 5}, Point{2, 6}},
 	Point{3, 5}: []Point{Point{3, 4}, Point{2, 5}, Point{4, 5}, Point{3, 6}},
-	Point{4, 3}: []Point{Point{4, 4}, Point{3, 5}, Point{5, 5}, Point{4, 6}},
-	Point{5, 3}: []Point{Point{5, 4}, Point{4, 5}, Point{6, 5}, Point{5, 6}},
-	Point{6, 3}: []Point{Point{6, 4}, Point{5, 5}, Point{6, 6}},
+	Point{4, 5}: []Point{Point{4, 4}, Point{3, 5}, Point{5, 5}, Point{4, 6}},
+	Point{5, 5}: []Point{Point{5, 4}, Point{4, 5}, Point{6, 5}, Point{5, 6}},
+	Point{6, 5}: []Point{Point{6, 4}, Point{5, 5}, Point{6, 6}},
 	// Row 6
 	Point{0, 6}: []Point{Point{0, 5}, Point{1, 6}, Point{0, 7}},
 	Point{1, 6}: []Point{Point{1, 5}, Point{0, 6}, Point{2, 6}, Point{1, 7}},
@@ -313,7 +313,7 @@ var swimmingAdjacency = map[Point][]Point{
 	Point{2, 8}: []Point{Point{2, 7}, Point{1, 8}, Point{3, 8}},
 	Point{3, 8}: []Point{Point{3, 7}, Point{2, 8}, Point{4, 8}},
 	Point{4, 8}: []Point{Point{4, 7}, Point{3, 8}, Point{5, 8}},
-	Point{5, 8}: []Point{Point{5, 7}, Point{4, 8}, Point{4, 8}},
+	Point{5, 8}: []Point{Point{5, 7}, Point{4, 8}, Point{6, 8}},
 	Point{6, 8}: []Point{Point{6, 7}, Point{5, 8}},
 }
 

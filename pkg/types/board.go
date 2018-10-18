@@ -10,8 +10,14 @@ type Board [9][7]Piece
 type Point [2]int
 
 var (
-	ADen = Point{3, 0}
-	BDen = Point{3, 8}
+	ADen   = Point{3, 0}
+	ATrap1 = Point{2, 0}
+	ATrap2 = Point{4, 0}
+	ATrap3 = Point{3, 1}
+	BDen   = Point{3, 8}
+	BTrap1 = Point{3, 7}
+	BTrap2 = Point{2, 8}
+	BTrap3 = Point{4, 8}
 )
 
 func NewBoard() *Board {
@@ -79,6 +85,7 @@ func (b *Board) MoveList() [][2]Point {
 			}
 			for _, to := range adjacency[from] {
 				opponent := b.Get(to)
+				opponent = opponent.MaybeApplyTrap(to)
 				if p.CanTake(opponent) {
 					moves = append(moves, [2]Point{from, to})
 				}

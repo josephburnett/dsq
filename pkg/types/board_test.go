@@ -154,6 +154,26 @@ func TestMoveList(t *testing.T) {
 			{{3, 7}, {4, 7}}, // right
 			{{3, 7}, {3, 8}}, // up
 		},
+	}, {
+		name:  "cat can take opposing dog on trap",
+		board: EmptyBoard().With(Point{1, 0}, ACat).With(Point{2, 0}, BDog),
+		want: [][2]Point{
+			{{1, 0}, {0, 0}}, // cat left
+			{{1, 0}, {2, 0}}, // cat right (takes dog)
+			{{1, 0}, {1, 1}}, // cat up
+			{{2, 0}, {1, 0}}, // dog left (takes cat)
+			{{2, 0}, {3, 0}}, // dog right
+			{{2, 0}, {2, 1}}, // dog up
+		},
+	}, {
+		name:  "cat can not take own dog on trap",
+		board: EmptyBoard().With(Point{1, 0}, ACat).With(Point{2, 0}, ADog),
+		want: [][2]Point{
+			{{1, 0}, {0, 0}}, // cat left
+			{{1, 0}, {1, 1}}, // cat up
+			{{2, 0}, {3, 0}}, // dog right
+			{{2, 0}, {2, 1}}, // dog up
+		},
 	}}
 
 	for _, tc := range cases {

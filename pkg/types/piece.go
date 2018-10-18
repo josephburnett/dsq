@@ -85,6 +85,20 @@ func (p Piece) CanSwim() bool {
 	}
 }
 
+func (p Piece) MaybeApplyTrap(pt Point) Piece {
+	switch pt {
+	case ATrap1, ATrap2, ATrap3:
+		if p.Side() == B {
+			return Empty // B falls in A's trap
+		}
+	case BTrap1, BTrap2, BTrap3:
+		if p.Side() == A {
+			return Empty // A falls in B's trap
+		}
+	}
+	return p
+}
+
 var pieceCanTake = map[Piece]map[Piece]bool{
 	AMouse: {
 		Empty:     true,

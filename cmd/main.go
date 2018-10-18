@@ -1,11 +1,11 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
 	"net/rpc"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -16,13 +16,14 @@ import (
 )
 
 var (
-	backend = os.Getenv("BACKEND")
+	enableParallelSearch  bool
+	parallelSearchBackend string
+	client                *server.Client
 )
 
 func init() {
-	if backend == "" {
-		backend = "localhost:8080"
-	}
+	flag.BoolVar(&enableParallelSearch, "enableParallelSearch", false, "turns on parallel search via rpc to backend")
+	flag.StringVar(&parallelSearchBackend, "parallelSearchBackend", "localhost:8080", "address of the parallel search rpc server")
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -56,7 +57,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		start := time.Now()
-		reply, err := server.Move(backend, board, move)
+		reply, err := client.Move(board, move)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusServiceUnavailable)
 			return
@@ -90,12 +91,23 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	flag.Parse()
+
+	client = &server.Client{
+		EnableParallelSearch:  enableParallelSearch,
+		ParallelSearchBackend: parallelSearchBackend,
+	}
+
 	s := new(server.Search)
 	rpc.Register(s)
 	rpc.HandleHTTP()
 	http.HandleFunc("/", handler)
 
-	log.Printf("dsq up with backend %v", backend)
+	log.Printf("dsq up")
+	log.Printf("enableParallelSearch=%v", enableParallelSearch)
+	if enableParallelSearch {
+		log.Printf("parallelSearchBackend=%v", parallelSearchBackend)
+	}
 	http.ListenAndServe(":8080", nil)
 }
 

@@ -84,6 +84,12 @@ func (b *Board) MoveList() [][2]Point {
 				adjacency = normalAdjacency
 			}
 			for _, to := range adjacency[from] {
+				if p.Side() == A && to == ADen {
+					continue
+				}
+				if p.Side() == B && to == BDen {
+					continue
+				}
 				opponent := b.Get(to)
 				opponent = opponent.MaybeApplyTrap(to)
 				if p.CanTake(opponent) {

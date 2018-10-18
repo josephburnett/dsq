@@ -171,8 +171,14 @@ func TestMoveList(t *testing.T) {
 		want: [][2]Point{
 			{{1, 0}, {0, 0}}, // cat left
 			{{1, 0}, {1, 1}}, // cat up
-			{{2, 0}, {3, 0}}, // dog right
 			{{2, 0}, {2, 1}}, // dog up
+		},
+	}, {
+		name:  "can not move into own den",
+		board: EmptyBoard().With(Point{2, 0}, ACat),
+		want: [][2]Point{
+			{{2, 0}, {1, 0}}, // left
+			{{2, 0}, {2, 1}}, // up
 		},
 	}}
 

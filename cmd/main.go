@@ -26,7 +26,7 @@ func init() {
 	flag.StringVar(&parallelSearchBackend, "parallelSearchBackend", "localhost:8080", "address of the parallel search rpc server")
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func rootHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("frontend request")
 	err := r.ParseForm()
 	if err != nil {
@@ -90,6 +90,16 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func imageHandler(w http.ResponseWriter, r *http.Request) {
+	filename := r.URL.Path[len("/images/"):]
+	file, err := html.Image(filename)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	w.Write(file)
+}
+
 func main() {
 	flag.Parse()
 
@@ -101,7 +111,8 @@ func main() {
 	s := new(server.Search)
 	rpc.Register(s)
 	rpc.HandleHTTP()
-	http.HandleFunc("/", handler)
+	http.HandleFunc("/images/", imageHandler)
+	http.HandleFunc("/", rootHandler)
 
 	log.Printf("dsq up")
 	log.Printf("enableParallelSearch=%v", enableParallelSearch)

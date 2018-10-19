@@ -83,6 +83,7 @@ document.click = function (square) {
         {{range .Message }}
         <div>{{ . }}</div>
         {{end}}
+        <div><img src="images/board.png"></div>
     </body>
 </html>
 `

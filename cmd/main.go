@@ -37,7 +37,9 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		b := types.NewBoard()
-		msg = append(msg, "Game on!")
+		msg = append(msg, "Welcome to Dou Shou Qi!")
+		msg = append(msg, "How to play: <a href=\"https://en.wikipedia.org/wiki/Jungle_(board_game)\">https://en.wikipedia.org/wiki/Jungle_(board_game)</a>")
+		msg = append(msg, "Source code: <a href=\"https://github.com/josephburnett/dsq\">https://github.com/josephburnett/dsq</a>")
 		err = html.Render(w, b, msg)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusServiceUnavailable)
@@ -64,14 +66,14 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		if reply.Ok {
 			stat := reply.Stat
-			msg = append(msg, fmt.Sprintf("Moved %v.", move))
-			msg = append(msg, fmt.Sprintf("Counter-moved %v.", reply.BestMove))
+			msg = append(msg, fmt.Sprintf("Human moved %v.", move))
+			msg = append(msg, fmt.Sprintf("Computer counter-moved %v.", reply.BestMove))
 			msg = append(msg, fmt.Sprintf("Evaluated %v positions.", stat.PositionsEvaluated))
 			msg = append(msg, fmt.Sprintf("Spent %v searching.", stat.Time))
 			latency := time.Since(start)
-			msg = append(msg, fmt.Sprintf("Latency %v.", latency))
+			msg = append(msg, fmt.Sprintf("Request Latency %v.", latency))
 			log.Printf("latency %v", latency)
-			msg = append(msg, fmt.Sprintf("Best outcome is %v.", -stat.BestOutcome))
+			msg = append(msg, fmt.Sprintf("Best outcome is %v (positive is good).", -stat.BestOutcome))
 			log.Printf("valid move returning stat %+v", stat)
 		} else {
 			msg = append(msg, fmt.Sprintf("Invalid move %v.", move))

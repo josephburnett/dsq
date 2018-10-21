@@ -31,7 +31,7 @@ func (c *Client) Move(b *types.Board, move [2]types.Point) (*Reply, error) {
 				return reply, nil
 			} else {
 				// Use the engine directly
-				bestMove, stat, ok := engine.BestMove(b.Clone(), types.A, 5)
+				bestMove, stat, ok := engine.BestMove(b.Clone(), types.A, 4)
 				if ok {
 					b.Move(bestMove)
 					reply := &Reply{

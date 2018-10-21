@@ -1,5 +1,5 @@
 FROM golang
-ADD . /go/src/github.com/josephburnett/dsq-golang
-RUN go install github.com/josephburnett/dsq-golang/cmd
+ADD . /go/src/github.com/josephburnett/dsq
+RUN go install github.com/josephburnett/dsq/cmd
 ENTRYPOINT /go/bin/cmd
 EXPOSE 8080

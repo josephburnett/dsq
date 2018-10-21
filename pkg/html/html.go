@@ -15,7 +15,7 @@ type HtmlBoard struct {
 type data struct {
 	Board         *types.Board
 	RenderedBoard template.HTML
-	Message       []string
+	Message       []template.HTML
 }
 
 func (h *HtmlBoard) Render() template.HTML {
@@ -110,10 +110,14 @@ func (h *HtmlBoard) RenderSquare(x, y int) string {
 }
 
 func Render(w io.Writer, b *types.Board, msg []string) error {
+	htmlMsg := make([]template.HTML, len(msg))
+	for i, msg := range msg {
+		htmlMsg[i] = template.HTML(msg)
+	}
 	d := data{
 		Board:         b,
 		RenderedBoard: (&HtmlBoard{b}).Render(),
-		Message:       msg,
+		Message:       htmlMsg,
 	}
 	t, err := template.New("page").Parse(tmp)
 	if err != nil {
@@ -136,6 +140,12 @@ const tmp = `
             }
         </style>
         <script>
+
+function log(msg) {
+    var div = document.createElement("div");
+    div.innerText = msg;
+    document.body.appendChild(div);
+}
 
 // https://stackoverflow.com/questions/133925/javascript-post-request-like-a-form-submit
 function post(params) {
@@ -161,17 +171,17 @@ document.click = function (square) {
     // Select
     if (!document.selected) {
         document.selected = square;
-        console.log("selected " + square);
+        log("Selected square " + square);
         return;
     }
     // Unselect
     if (document.selected == square) {
         delete(document.selected);
-        console.log("unselected " + square);
+        log("Unselected square " + square);
         return;
     }
     // Move
-    console.log("moving from " + document.selected + " to " + square);
+    log("Moving from " + document.selected + " to " + square + "...");
     post({move: document.selected + square, board: document.board})
     delete(document.selected)
 }

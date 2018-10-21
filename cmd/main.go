@@ -27,6 +27,10 @@ func init() {
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path[len("/"):] != "" {
+		http.Error(w, "file not found", http.StatusBadRequest)
+		return
+	}
 	log.Printf("frontend request")
 	err := r.ParseForm()
 	if err != nil {

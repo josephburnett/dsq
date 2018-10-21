@@ -334,7 +334,7 @@ func (b *Board) String() string {
 	var buffer bytes.Buffer
 
 	buffer.WriteString("+--+--+--+--+--+--+--+\n")
-	for y := 8; y >= 0; y-- {
+	for y := 0; y < 9; y++ {
 		for x := 0; x < 7; x++ {
 			buffer.WriteString(fmt.Sprintf("|%v", b.Get(Point{x, y}).String()))
 		}

@@ -25,6 +25,8 @@ func Image(filename string) ([]byte, error) {
 }
 
 // https://upload.wikimedia.org/wikipedia/commons/d/d0/Dou_shou_qi_board.png
+const boardWidth = 471
+const boardHeight = 599
 const boardBase64 = `
 iVBORw0KGgoAAAANSUhEUgAAAfQAAAJ8CAYAAAAI3VOiAAAACXBIWXMAAA9hAAAPYQGoP6dpAAAA
 BGdBTUEAALGOfPtRkwAAACBjSFJNAAB6JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VG

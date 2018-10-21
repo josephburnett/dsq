@@ -23,11 +23,11 @@ var (
 func NewBoard() *Board {
 	return &Board{
 		// Row 0
-		{ATiger, Empty, Empty, Empty, Empty, Empty, ALion},
+		{ALion, Empty, Empty, Empty, Empty, Empty, ATiger},
 		// Row 1
-		{Empty, ACat, Empty, Empty, Empty, ADog, Empty},
+		{Empty, ADog, Empty, Empty, Empty, ACat, Empty},
 		// Row 2
-		{AElephant, Empty, AWolf, Empty, AHyena, Empty, AMouse},
+		{AMouse, Empty, AHyena, Empty, AWolf, Empty, AElephant},
 		// Row 3
 		{Empty, Empty, Empty, Empty, Empty, Empty, Empty},
 		// Row 4
@@ -35,11 +35,11 @@ func NewBoard() *Board {
 		// Row 5
 		{Empty, Empty, Empty, Empty, Empty, Empty, Empty},
 		// Row 6
-		{BMouse, Empty, BHyena, Empty, BWolf, Empty, BElephant},
+		{BElephant, Empty, BWolf, Empty, BHyena, Empty, BMouse},
 		// Row 7
-		{Empty, BDog, Empty, Empty, Empty, BCat, Empty},
+		{Empty, BCat, Empty, Empty, Empty, BDog, Empty},
 		// Row 8
-		{BLion, Empty, Empty, Empty, Empty, Empty, BTiger},
+		{BTiger, Empty, Empty, Empty, Empty, Empty, BLion},
 	}
 }
 

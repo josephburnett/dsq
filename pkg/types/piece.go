@@ -45,7 +45,8 @@ func (p Piece) Side() Side {
 		ADog,
 		AHyena,
 		ATiger,
-		ALion:
+		ALion,
+		AElephant:
 		return A
 	case
 		BMouse,
@@ -54,7 +55,8 @@ func (p Piece) Side() Side {
 		BDog,
 		BHyena,
 		BTiger,
-		BLion:
+		BLion,
+		BElephant:
 		return B
 	default:
 		return None

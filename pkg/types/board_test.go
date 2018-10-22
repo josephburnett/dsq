@@ -25,7 +25,7 @@ func TestGet(t *testing.T) {
 	}, {
 		name:  "get tiger",
 		board: NewBoard(),
-		point: Point{0, 0},
+		point: Point{6, 0},
 		want:  ATiger,
 	}}
 
@@ -48,13 +48,13 @@ func TestMove(t *testing.T) {
 	}{{
 		name:          "move tiger to empty",
 		board:         NewBoard(),
-		move:          [2]Point{{0, 0}, {0, 1}},
+		move:          [2]Point{{6, 0}, {6, 1}},
 		wantDisplaced: Empty,
 		wantPlaced:    ATiger,
 	}, {
 		name:          "displace tiger with tiger",
 		board:         NewBoard(),
-		move:          [2]Point{{0, 0}, {6, 8}},
+		move:          [2]Point{{6, 0}, {0, 8}},
 		wantDisplaced: BTiger,
 		wantPlaced:    ATiger,
 	}}
@@ -185,6 +185,48 @@ func TestMoveList(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			if got := tc.board.MoveList(); !equals(got, tc.want) {
+				t.Errorf("%q expected %v. got %v.", tc.name, tc.want, got)
+			}
+		})
+	}
+}
+
+func TestWinner(t *testing.T) {
+	cases := []struct {
+		name  string
+		board *Board
+		want  Side
+	}{{
+		name:  "new game not over",
+		board: NewBoard(),
+		want:  None,
+	}, {
+		name:  "a wins",
+		board: NewBoard().With(BDen, ACat),
+		want:  A,
+	}, {
+		name:  "b wins",
+		board: NewBoard().With(ADen, BCat),
+		want:  B,
+	}, {
+		name: "a wins when b has no moves",
+		board: EmptyBoard().With(
+			Point{0, 0}, BCat).With( // trapped in corner with no moves
+			Point{1, 0}, ALion).With(
+			Point{0, 1}, ATiger),
+		want: A,
+	}, {
+		name: "b wins when a has no moves",
+		board: EmptyBoard().With(
+			Point{0, 0}, ACat).With( // trapped in corner with no moves
+			Point{1, 0}, BLion).With(
+			Point{0, 1}, BTiger),
+		want: B,
+	}}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := tc.board.Winner(); got != tc.want {
 				t.Errorf("%q expected %v. got %v.", tc.name, tc.want, got)
 			}
 		})

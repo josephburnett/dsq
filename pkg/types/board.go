@@ -101,6 +101,33 @@ func (b *Board) MoveList() [][2]Point {
 	return moves
 }
 
+func (b *Board) Winner() Side {
+	// Win by entering opponent's den.
+	if b.Get(BDen).Side() == A {
+		return A
+	}
+	if b.Get(ADen).Side() == B {
+		return B
+	}
+	aCount := 0
+	bCount := 0
+	for _, m := range b.MoveList() {
+		if b.Get(m[0]).Side() == A {
+			aCount++
+		} else {
+			bCount++
+		}
+	}
+	// If you have no moves, you lose.
+	if aCount == 0 {
+		return B
+	}
+	if bCount == 0 {
+		return A
+	}
+	return None
+}
+
 func (p Point) Rotate() Point {
 	return Point{6 - p[0], 8 - p[1]}
 }

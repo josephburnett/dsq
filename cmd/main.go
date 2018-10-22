@@ -57,31 +57,49 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		board, err := types.Unmarshal(r.Form.Get("board"))
-		log.Printf("requested move %v on board\n%v\n", move, board)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		start := time.Now()
-		reply, err := client.Move(board, move)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusServiceUnavailable)
-			return
-		}
-		if reply.Ok {
-			stat := reply.Stat
-			msg = append(msg, fmt.Sprintf("Human moved %v.", move))
-			msg = append(msg, fmt.Sprintf("Computer counter-moved %v.", reply.BestMove))
-			msg = append(msg, fmt.Sprintf("Evaluated %v positions.", stat.PositionsEvaluated))
-			msg = append(msg, fmt.Sprintf("Spent %v searching.", stat.Time))
-			latency := time.Since(start)
-			msg = append(msg, fmt.Sprintf("Request Latency %v.", latency))
-			log.Printf("latency %v", latency)
-			msg = append(msg, fmt.Sprintf("Best outcome is %v (positive is good).", -stat.BestOutcome))
-			log.Printf("valid move returning stat %+v", stat)
+		log.Printf("requested move %v on board\n%v\n", move, board)
+		if winner := board.Winner(); winner != types.None {
+			msg = append(msg, "Game over!")
+			if winner == types.A {
+				msg = append(msg, "Computer wins.")
+			} else {
+				msg = append(msg, "Human wins.")
+			}
 		} else {
-			msg = append(msg, fmt.Sprintf("Invalid move %v.", move))
-			log.Printf("invalid move")
+			start := time.Now()
+			reply, err := client.Move(board, move)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusServiceUnavailable)
+				return
+			}
+			if winner := board.Winner(); winner != types.None {
+				msg = append(msg, "Game over!")
+				if winner == types.A {
+					msg = append(msg, "Computer wins.")
+				} else {
+					msg = append(msg, "Human wins.")
+				}
+			} else {
+				if reply.Ok {
+					stat := reply.Stat
+					msg = append(msg, fmt.Sprintf("Human moved %v.", move))
+					msg = append(msg, fmt.Sprintf("Computer counter-moved %v.", reply.BestMove))
+					msg = append(msg, fmt.Sprintf("Evaluated %v positions.", stat.PositionsEvaluated))
+					msg = append(msg, fmt.Sprintf("Spent %v searching.", stat.Time))
+					latency := time.Since(start)
+					msg = append(msg, fmt.Sprintf("Request Latency %v.", latency))
+					log.Printf("latency %v", latency)
+					msg = append(msg, fmt.Sprintf("Best outcome is %v (positive is good).", -stat.BestOutcome))
+					log.Printf("valid move returning stat %+v", stat)
+				} else {
+					msg = append(msg, fmt.Sprintf("Invalid move %v.", move))
+					log.Printf("invalid move")
+				}
+			}
 		}
 		err = html.Render(w, board, msg)
 		if err != nil {

@@ -83,13 +83,27 @@ func (b *Board) MoveList() [][2]Point {
 			default:
 				adjacency = normalAdjacency
 			}
+		AdjacencyList:
 			for _, to := range adjacency[from] {
+				// Cannot move into own den.
 				if p.Side() == A && to == ADen {
 					continue
 				}
 				if p.Side() == B && to == BDen {
 					continue
 				}
+				// Check for mouse blocking jump.
+				switch p {
+				case ATiger, ALion, BTiger, BLion:
+					if path, ok := jumpPath[[2]Point{from, to}]; ok {
+						for _, p := range path {
+							if b.Get(p) != Empty {
+								continue AdjacencyList
+							}
+						}
+					}
+				}
+				// Check opponent strength.
 				opponent := b.Get(to)
 				opponent = opponent.MaybeApplyTrap(to)
 				if p.CanTake(opponent) {
@@ -99,6 +113,29 @@ func (b *Board) MoveList() [][2]Point {
 		}
 	}
 	return moves
+}
+
+var jumpPath = map[[2]Point][]Point{
+	[2]Point{{1, 2}, {1, 6}}: {Point{1, 3}, Point{1, 4}, Point{1, 5}},
+	[2]Point{{2, 2}, {2, 6}}: {Point{2, 3}, Point{2, 4}, Point{2, 5}},
+	[2]Point{{4, 2}, {4, 6}}: {Point{4, 3}, Point{4, 4}, Point{4, 5}},
+	[2]Point{{5, 2}, {5, 6}}: {Point{5, 3}, Point{5, 4}, Point{5, 5}},
+	[2]Point{{1, 6}, {1, 2}}: {Point{1, 3}, Point{1, 4}, Point{1, 5}},
+	[2]Point{{2, 6}, {2, 2}}: {Point{2, 3}, Point{2, 4}, Point{2, 5}},
+	[2]Point{{4, 6}, {4, 2}}: {Point{4, 3}, Point{4, 4}, Point{4, 5}},
+	[2]Point{{5, 6}, {5, 2}}: {Point{5, 3}, Point{5, 4}, Point{5, 5}},
+	[2]Point{{0, 3}, {3, 3}}: {Point{1, 3}, Point{2, 3}},
+	[2]Point{{0, 4}, {3, 4}}: {Point{1, 4}, Point{2, 4}},
+	[2]Point{{0, 5}, {3, 5}}: {Point{1, 5}, Point{2, 5}},
+	[2]Point{{3, 3}, {6, 3}}: {Point{4, 3}, Point{5, 3}},
+	[2]Point{{3, 4}, {6, 4}}: {Point{4, 4}, Point{5, 4}},
+	[2]Point{{3, 5}, {6, 5}}: {Point{4, 5}, Point{5, 5}},
+	[2]Point{{3, 3}, {0, 3}}: {Point{1, 3}, Point{2, 3}},
+	[2]Point{{3, 4}, {0, 4}}: {Point{1, 4}, Point{2, 4}},
+	[2]Point{{3, 5}, {0, 5}}: {Point{1, 5}, Point{2, 5}},
+	[2]Point{{6, 3}, {3, 3}}: {Point{4, 3}, Point{5, 3}},
+	[2]Point{{6, 4}, {3, 4}}: {Point{4, 4}, Point{5, 4}},
+	[2]Point{{6, 5}, {3, 5}}: {Point{4, 5}, Point{5, 5}},
 }
 
 func (b *Board) Winner() Side {

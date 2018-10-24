@@ -180,6 +180,18 @@ func TestMoveList(t *testing.T) {
 			{{2, 0}, {1, 0}}, // left
 			{{2, 0}, {2, 1}}, // up
 		},
+	}, {
+		name: "lion cannot jump over mouse",
+		board: EmptyBoard().With(
+			Point{1, 3}, AMouse).With(
+			Point{0, 3}, ALion),
+		want: [][2]Point{
+			{{0, 3}, {0, 2}}, // lion up
+			{{0, 3}, {0, 4}}, // lion down
+			{{1, 3}, {1, 2}}, // mouse up
+			{{1, 3}, {2, 3}}, // mouse right
+			{{1, 3}, {1, 4}}, // mouse down
+		},
 	}}
 
 	for _, tc := range cases {
